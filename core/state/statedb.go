@@ -432,7 +432,7 @@ func (s *StateDB) SetCode(addr common.Address, code []byte) {
 	}
 }
 
-// TODO ABCDE:
+// TODO
 func (s *StateDB) SetResidualState(addr common.Address, key, value common.Hash) {
 	stateObject := s.GetOrNewStateObject(addr)
 	if stateObject != nil {
