@@ -1,4 +1,4 @@
-module ABCDEcapital/parallel-go-ethereum
+module github.com/ABCDEcapital/parallel-go-ethereum
 
 go 1.18
 
