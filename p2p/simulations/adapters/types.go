@@ -26,13 +26,13 @@ import (
 	"strconv"
 
 	"github.com/docker/docker/pkg/reexec"
-	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/ethereum/go-ethereum/log"
-	"github.com/ethereum/go-ethereum/node"
-	"github.com/ethereum/go-ethereum/p2p"
-	"github.com/ethereum/go-ethereum/p2p/enode"
-	"github.com/ethereum/go-ethereum/p2p/enr"
-	"github.com/ethereum/go-ethereum/rpc"
+	"github.com/ABCDEcapital/parallel-go-ethereum/crypto"
+	"github.com/ABCDEcapital/parallel-go-ethereum/log"
+	"github.com/ABCDEcapital/parallel-go-ethereum/node"
+	"github.com/ABCDEcapital/parallel-go-ethereum/p2p"
+	"github.com/ABCDEcapital/parallel-go-ethereum/p2p/enode"
+	"github.com/ABCDEcapital/parallel-go-ethereum/p2p/enr"
+	"github.com/ABCDEcapital/parallel-go-ethereum/rpc"
 	"github.com/gorilla/websocket"
 )
 

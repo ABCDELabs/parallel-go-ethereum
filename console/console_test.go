@@ -25,15 +25,15 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/consensus/ethash"
-	"github.com/ethereum/go-ethereum/console/prompt"
-	"github.com/ethereum/go-ethereum/core"
-	"github.com/ethereum/go-ethereum/eth"
-	"github.com/ethereum/go-ethereum/eth/ethconfig"
-	"github.com/ethereum/go-ethereum/internal/jsre"
-	"github.com/ethereum/go-ethereum/miner"
-	"github.com/ethereum/go-ethereum/node"
+	"github.com/ABCDEcapital/parallel-go-ethereum/common"
+	"github.com/ABCDEcapital/parallel-go-ethereum/consensus/ethash"
+	"github.com/ABCDEcapital/parallel-go-ethereum/console/prompt"
+	"github.com/ABCDEcapital/parallel-go-ethereum/core"
+	"github.com/ABCDEcapital/parallel-go-ethereum/eth"
+	"github.com/ABCDEcapital/parallel-go-ethereum/eth/ethconfig"
+	"github.com/ABCDEcapital/parallel-go-ethereum/internal/jsre"
+	"github.com/ABCDEcapital/parallel-go-ethereum/miner"
+	"github.com/ABCDEcapital/parallel-go-ethereum/node"
 )
 
 const (
