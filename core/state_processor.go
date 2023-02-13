@@ -107,10 +107,7 @@ func applyTransaction(msg types.Message, config *params.ChainConfig, gp *GasPool
 	var root []byte
 	if config.IsByzantium(blockNumber) {
 		statedb.Finalise(true)
-	} else if (){
-		// TODO ABCDE Execution
-	} 
-	else {
+	} else {
 		root = statedb.IntermediateRoot(config.IsEIP158(blockNumber)).Bytes()
 	}
 	*usedGas += result.UsedGas
