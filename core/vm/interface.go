@@ -19,9 +19,9 @@ package vm
 import (
 	"math/big"
 
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/ethereum/go-ethereum/params"
+	"github.com/ABCDEcapital/parallel-go-ethereum/common"
+	"github.com/ABCDEcapital/parallel-go-ethereum/core/types"
+	"github.com/ABCDEcapital/parallel-go-ethereum/params"
 )
 
 // StateDB is an EVM database for full state querying.
@@ -47,6 +47,7 @@ type StateDB interface {
 	GetCommittedState(common.Address, common.Hash) common.Hash
 	GetState(common.Address, common.Hash) common.Hash
 	SetState(common.Address, common.Hash, common.Hash)
+	SetResidualState(common.Address, common.Hash, common.Hash)
 
 	GetTransientState(addr common.Address, key common.Hash) common.Hash
 	SetTransientState(addr common.Address, key, value common.Hash)

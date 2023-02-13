@@ -22,17 +22,17 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/consensus/clique"
-	"github.com/ethereum/go-ethereum/core"
-	"github.com/ethereum/go-ethereum/core/rawdb"
-	"github.com/ethereum/go-ethereum/core/state"
-	"github.com/ethereum/go-ethereum/core/txpool"
-	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/ethereum/go-ethereum/core/vm"
-	"github.com/ethereum/go-ethereum/eth/downloader"
-	"github.com/ethereum/go-ethereum/event"
-	"github.com/ethereum/go-ethereum/trie"
+	"github.com/ABCDEcapital/parallel-go-ethereum/common"
+	"github.com/ABCDEcapital/parallel-go-ethereum/consensus/clique"
+	"github.com/ABCDEcapital/parallel-go-ethereum/core"
+	"github.com/ABCDEcapital/parallel-go-ethereum/core/rawdb"
+	"github.com/ABCDEcapital/parallel-go-ethereum/core/state"
+	"github.com/ABCDEcapital/parallel-go-ethereum/core/txpool"
+	"github.com/ABCDEcapital/parallel-go-ethereum/core/types"
+	"github.com/ABCDEcapital/parallel-go-ethereum/core/vm"
+	"github.com/ABCDEcapital/parallel-go-ethereum/eth/downloader"
+	"github.com/ABCDEcapital/parallel-go-ethereum/event"
+	"github.com/ABCDEcapital/parallel-go-ethereum/trie"
 )
 
 type mockBackend struct {

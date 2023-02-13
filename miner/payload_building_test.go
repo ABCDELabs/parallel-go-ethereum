@@ -21,11 +21,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/consensus/ethash"
-	"github.com/ethereum/go-ethereum/core/beacon"
-	"github.com/ethereum/go-ethereum/core/rawdb"
-	"github.com/ethereum/go-ethereum/params"
+	"github.com/ABCDEcapital/parallel-go-ethereum/common"
+	"github.com/ABCDEcapital/parallel-go-ethereum/consensus/ethash"
+	"github.com/ABCDEcapital/parallel-go-ethereum/core/beacon"
+	"github.com/ABCDEcapital/parallel-go-ethereum/core/rawdb"
+	"github.com/ABCDEcapital/parallel-go-ethereum/params"
 )
 
 func TestBuildPayload(t *testing.T) {

@@ -34,7 +34,7 @@ import (
 	"encoding/json"
 	"errors"
 
-	"github.com/ethereum/go-ethereum/eth/tracers"
+	"github.com/ABCDEcapital/parallel-go-ethereum/eth/tracers"
 )
 
 // init registers itself this packages as a lookup for tracers.

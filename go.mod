@@ -1,4 +1,4 @@
-module github.com/ethereum/go-ethereum
+module github.com/ABCDEcapital/parallel-go-ethereum
 
 go 1.18
 
@@ -106,3 +106,5 @@ require (
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
+
+replace github.com/ABCDEcapital/parallel-go-ethereum => /Users/siyuan/workspace/ABCDE/parallel-go-ethereum

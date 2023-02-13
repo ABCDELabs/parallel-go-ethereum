@@ -23,7 +23,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/ethereum/go-ethereum/log"
+	"github.com/ABCDEcapital/parallel-go-ethereum/log"
 )
 
 // makeWizard creates and returns a new puppeth wizard.

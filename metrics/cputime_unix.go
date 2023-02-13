@@ -22,7 +22,7 @@ package metrics
 import (
 	syscall "golang.org/x/sys/unix"
 
-	"github.com/ethereum/go-ethereum/log"
+	"github.com/ABCDEcapital/parallel-go-ethereum/log"
 )
 
 // getProcessCPUTime retrieves the process' CPU time since program startup.

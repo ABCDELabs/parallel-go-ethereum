@@ -24,17 +24,17 @@ import (
 	"sync"
 	"time"
 
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/common/mclock"
-	"github.com/ethereum/go-ethereum/core/rawdb"
-	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/ethereum/go-ethereum/les/flowcontrol"
-	"github.com/ethereum/go-ethereum/log"
-	"github.com/ethereum/go-ethereum/p2p"
-	"github.com/ethereum/go-ethereum/p2p/enode"
-	"github.com/ethereum/go-ethereum/params"
-	"github.com/ethereum/go-ethereum/rlp"
+	"github.com/ABCDEcapital/parallel-go-ethereum/common"
+	"github.com/ABCDEcapital/parallel-go-ethereum/common/mclock"
+	"github.com/ABCDEcapital/parallel-go-ethereum/core/rawdb"
+	"github.com/ABCDEcapital/parallel-go-ethereum/core/types"
+	"github.com/ABCDEcapital/parallel-go-ethereum/crypto"
+	"github.com/ABCDEcapital/parallel-go-ethereum/les/flowcontrol"
+	"github.com/ABCDEcapital/parallel-go-ethereum/log"
+	"github.com/ABCDEcapital/parallel-go-ethereum/p2p"
+	"github.com/ABCDEcapital/parallel-go-ethereum/p2p/enode"
+	"github.com/ABCDEcapital/parallel-go-ethereum/params"
+	"github.com/ABCDEcapital/parallel-go-ethereum/rlp"
 )
 
 // requestBenchmark is an interface for different randomized request generators

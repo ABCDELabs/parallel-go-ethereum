@@ -29,10 +29,10 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/console/prompt"
-	"github.com/ethereum/go-ethereum/core"
-	"github.com/ethereum/go-ethereum/log"
+	"github.com/ABCDEcapital/parallel-go-ethereum/common"
+	"github.com/ABCDEcapital/parallel-go-ethereum/console/prompt"
+	"github.com/ABCDEcapital/parallel-go-ethereum/core"
+	"github.com/ABCDEcapital/parallel-go-ethereum/log"
 	"github.com/peterh/liner"
 	"golang.org/x/term"
 )

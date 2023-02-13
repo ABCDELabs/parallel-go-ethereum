@@ -20,14 +20,14 @@ import (
 	"fmt"
 	"math/big"
 
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/consensus"
-	"github.com/ethereum/go-ethereum/consensus/misc"
-	"github.com/ethereum/go-ethereum/core/state"
-	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/ethereum/go-ethereum/core/vm"
-	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/ethereum/go-ethereum/params"
+	"github.com/ABCDEcapital/parallel-go-ethereum/common"
+	"github.com/ABCDEcapital/parallel-go-ethereum/consensus"
+	"github.com/ABCDEcapital/parallel-go-ethereum/consensus/misc"
+	"github.com/ABCDEcapital/parallel-go-ethereum/core/state"
+	"github.com/ABCDEcapital/parallel-go-ethereum/core/types"
+	"github.com/ABCDEcapital/parallel-go-ethereum/core/vm"
+	"github.com/ABCDEcapital/parallel-go-ethereum/crypto"
+	"github.com/ABCDEcapital/parallel-go-ethereum/params"
 )
 
 // StateProcessor is a basic Processor, which takes care of transitioning
@@ -107,10 +107,7 @@ func applyTransaction(msg types.Message, config *params.ChainConfig, gp *GasPool
 	var root []byte
 	if config.IsByzantium(blockNumber) {
 		statedb.Finalise(true)
-	} else if (){
-		// TODO ABCDE Execution
-	} 
-	else {
+	} else {
 		root = statedb.IntermediateRoot(config.IsEIP158(blockNumber)).Bytes()
 	}
 	*usedGas += result.UsedGas

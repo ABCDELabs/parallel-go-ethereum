@@ -28,8 +28,8 @@ import (
 
 	"github.com/cespare/cp"
 	"github.com/davecgh/go-spew/spew"
-	"github.com/ethereum/go-ethereum/accounts"
-	"github.com/ethereum/go-ethereum/common"
+	"github.com/ABCDEcapital/parallel-go-ethereum/accounts"
+	"github.com/ABCDEcapital/parallel-go-ethereum/common"
 )
 
 var (

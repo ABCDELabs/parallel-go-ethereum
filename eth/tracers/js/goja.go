@@ -24,12 +24,12 @@ import (
 
 	"github.com/dop251/goja"
 
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/common/hexutil"
-	"github.com/ethereum/go-ethereum/core/vm"
-	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/ethereum/go-ethereum/eth/tracers"
-	jsassets "github.com/ethereum/go-ethereum/eth/tracers/js/internal/tracers"
+	"github.com/ABCDEcapital/parallel-go-ethereum/common"
+	"github.com/ABCDEcapital/parallel-go-ethereum/common/hexutil"
+	"github.com/ABCDEcapital/parallel-go-ethereum/core/vm"
+	"github.com/ABCDEcapital/parallel-go-ethereum/crypto"
+	"github.com/ABCDEcapital/parallel-go-ethereum/eth/tracers"
+	jsassets "github.com/ABCDEcapital/parallel-go-ethereum/eth/tracers/js/internal/tracers"
 )
 
 const (

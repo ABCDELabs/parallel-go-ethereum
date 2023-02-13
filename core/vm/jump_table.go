@@ -19,7 +19,7 @@ package vm
 import (
 	"fmt"
 
-	"github.com/ethereum/go-ethereum/params"
+	"github.com/ABCDEcapital/parallel-go-ethereum/params"
 )
 
 type (
@@ -85,7 +85,7 @@ func newABCDEInstructionSet() JumpTable {
 
 	instructionSet := newMergeInstructionSet()
 	instructionSet[ABCDESTORE] = &operation{
-		execute:     opABCDEstore,
+		execute:     opRSstore,
 		constantGas: GasABCDEStore,
 		minStack:    minStack(0, 1),
 		maxStack:    maxStack(0, 1),
