@@ -60,7 +60,9 @@ func NewEVMInterpreter(evm *EVM, cfg Config) *EVMInterpreter {
 	// If jump table was not initialised we set the default one.
 	if cfg.JumpTable == nil {
 		switch {
-		// TODO ABCDE:
+		// TODO Parallel:
+		case evm.chainRules.IsParallel:
+			cfg.JumpTable = &parallelInstructionSet
 		case evm.chainRules.IsMerge:
 			cfg.JumpTable = &mergeInstructionSet
 		case evm.chainRules.IsLondon:

@@ -18,9 +18,10 @@ package state
 
 import (
 	"bytes"
-	"testing"
-
+	"fmt"
 	"github.com/ABCDEcapital/parallel-go-ethereum/common"
+	"math/big"
+	"testing"
 )
 
 func BenchmarkCutOriginal(b *testing.B) {
@@ -43,4 +44,62 @@ func BenchmarkCutCustomTrim(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		common.TrimLeftZeroes(value[:])
 	}
+}
+
+// TODO: Dismiss
+func TestMergeResidualState(t *testing.T) {
+	s := common.HexToHash("a")
+	result := big.NewInt(0)
+
+	vm := common.BytesToHash([]byte("0xfffffffffffffffffffffffffffffffd"))
+	testValues := []common.Hash{common.HexToHash("a"), vm}
+	for _, v := range testValues {
+		fmt.Println("The value of v:", v)
+	}
+
+	fmt.Println("The value of Hash:", s.Big())
+	fmt.Println("The value of Merge:", result)
+
+	d := big.NewInt(-3)
+	if d.Cmp(big.NewInt(0)) >= 0 {
+		fmt.Println("The result is great than 0", common.BigToHash(big.NewInt(-3)).Big())
+	} else {
+		fmt.Println("The result is less than 0", common.BigToHash(big.NewInt(-3)))
+	}
+}
+
+func TestMergeResidualObject(t *testing.T) {
+
+	pos1 := common.HexToHash("1")
+
+	op1 := ResidualObject{Val: common.HexToHash("a"), Op: true}
+	op2 := ResidualObject{Val: common.HexToHash("1"), Op: true}
+	op3 := ResidualObject{Val: common.HexToHash("2"), Op: false}
+
+	res := []ResidualObject{op1, op2}
+
+	fmt.Println(op1.Val.Big(), op2.Val.Big())
+
+	result := big.NewInt(0)
+	for _, obj := range res {
+		if obj.Op {
+			result = result.Add(result, obj.Val.Big())
+		} else {
+			result = result.Sub(result, obj.Val.Big())
+		}
+	}
+	fmt.Println("The Merge Result", result)
+
+	state := make(ResidualStorage)
+	state[pos1] = []ResidualObject{op1, op3}
+	result = big.NewInt(0)
+	for _, obj := range state[pos1] {
+		if obj.Op {
+			result = result.Add(result, obj.Val.Big())
+		} else {
+			result = result.Sub(result, obj.Val.Big())
+		}
+	}
+	fmt.Println("The Merge Result", result)
+
 }

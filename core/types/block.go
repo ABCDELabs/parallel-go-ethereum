@@ -182,6 +182,14 @@ type Block struct {
 	ReceivedFrom interface{}
 }
 
+// PBlock represents an entire block in the Ethereum blockchain
+// This structure is only used for POC purpose.
+// @ABCDE Research.
+type PBlock struct {
+	*Block
+	ptransactions Transactions
+}
+
 // "external" block encoding. used for eth protocol, etc.
 type extblock struct {
 	Header *Header
@@ -276,7 +284,7 @@ func (b *Block) EncodeRLP(w io.Writer) error {
 	})
 }
 
-// TODO: copies
+func (b *PBlock) PTransactions() Transactions { return b.ptransactions }
 
 func (b *Block) Uncles() []*Header          { return b.uncles }
 func (b *Block) Transactions() Transactions { return b.transactions }

@@ -18,6 +18,7 @@ package core
 
 import (
 	"crypto/ecdsa"
+	"fmt"
 	"math/big"
 	"testing"
 
@@ -34,6 +35,16 @@ import (
 	"github.com/ABCDEcapital/parallel-go-ethereum/trie"
 	"golang.org/x/crypto/sha3"
 )
+
+func TestPProcessor(t *testing.T) {
+	fmt.Println("This is the Test")
+
+}
+
+func TestProcessor(t *testing.T) {
+	fmt.Println("This is the Test")
+
+}
 
 // TestStateProcessorErrors tests the output from the 'core' errors
 // as defined in core/error.go. These errors are generated when the

@@ -228,7 +228,8 @@ const (
 // 0xc0 range.
 // TODO  ABCDE:
 const (
-	ABCDESTORE OpCode = 0xc1
+	RSLOAD  OpCode = 0xd0
+	RSSTORE OpCode = 0xd1
 )
 
 // Since the opcodes aren't all in order we can't use a regular slice.
@@ -389,6 +390,10 @@ var opCodeToString = map[OpCode]string{
 	TLOAD:  "TLOAD",
 	TSTORE: "TSTORE",
 
+	// 0xd0 range.
+	RSLOAD:  "RSLOAD",
+	RSSTORE: "RSSTORE",
+
 	// 0xf0 range.
 	CREATE:       "CREATE",
 	CALL:         "CALL",
@@ -481,6 +486,8 @@ var stringToOp = map[string]OpCode{
 	"PUSH0":          PUSH0,
 	"TLOAD":          TLOAD,
 	"TSTORE":         TSTORE,
+	"RSLOAD":         RSLOAD,
+	"RSSTORE":        RSSTORE,
 	"PUSH1":          PUSH1,
 	"PUSH2":          PUSH2,
 	"PUSH3":          PUSH3,

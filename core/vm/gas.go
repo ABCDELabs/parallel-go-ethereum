@@ -22,8 +22,8 @@ import (
 
 // Gas costs
 const (
-	// TODO ABCDE
-	GasABCDEStore  uint64 = 500
+	// TODO ABCDE: Opcodes
+	GasRSStore     uint64 = 500
 	GasQuickStep   uint64 = 2
 	GasFastestStep uint64 = 3
 	GasFastStep    uint64 = 5

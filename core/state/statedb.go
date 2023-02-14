@@ -22,6 +22,7 @@ import (
 	"fmt"
 	"math/big"
 	"sort"
+	"sync"
 	"time"
 
 	"github.com/ABCDEcapital/parallel-go-ethereum/common"
@@ -82,6 +83,7 @@ type StateDB struct {
 	stateObjectsPending  map[common.Address]struct{} // State objects finalized but not yet written to the trie
 	stateObjectsDirty    map[common.Address]struct{} // State objects modified in the current execution
 	stateObjectsDestruct map[common.Address]struct{} // State objects destructed in the block
+	dirtyBuffer          map[common.Address]map[common.Hash][]common.Hash
 
 	// DB error.
 	// State objects are used by the consensus core and VM which are
@@ -130,6 +132,8 @@ type StateDB struct {
 	StorageUpdated int
 	AccountDeleted int
 	StorageDeleted int
+
+	lock sync.RWMutex
 }
 
 // New creates a new state from a given trie.
@@ -153,6 +157,8 @@ func New(root common.Hash, db Database, snaps *snapshot.Tree) (*StateDB, error) 
 		accessList:           newAccessList(),
 		transientStorage:     newTransientStorage(),
 		hasher:               crypto.NewKeccakState(),
+		// Could be useless
+		dirtyBuffer: make(map[common.Address]map[common.Hash][]common.Hash),
 	}
 	if sdb.snaps != nil {
 		if sdb.snap = sdb.snaps.Snapshot(root); sdb.snap != nil {
@@ -432,12 +438,32 @@ func (s *StateDB) SetCode(addr common.Address, code []byte) {
 	}
 }
 
+// SetResidualState
 // TODO
-func (s *StateDB) SetResidualState(addr common.Address, key, value common.Hash) {
+func (s *StateDB) SetResidualState(addr common.Address, key, value, op common.Hash) {
 	stateObject := s.GetOrNewStateObject(addr)
 	if stateObject != nil {
-		stateObject.SetResidualState(s.db, key, value)
+		stateObject.SetResidualState(s.db, key, value, op)
 	}
+}
+
+// SetDirtyBuffer
+// TODO: Could be useless?
+func (s *StateDB) SetDirtyBuffer(addr common.Address, key, value common.Hash) {
+	s.lock.Lock()
+	if s.dirtyBuffer[addr] != nil {
+		target := make(map[common.Hash][]common.Hash)
+		target[key] = []common.Hash{value}
+		s.dirtyBuffer[addr] = target
+	} else {
+		c := s.dirtyBuffer[addr]
+		c[key] = append(c[key], value)
+	}
+	s.lock.Unlock()
+}
+
+func (s *StateDB) GetDirtyBuffer() {
+
 }
 
 func (s *StateDB) SetState(addr common.Address, key, value common.Hash) {
