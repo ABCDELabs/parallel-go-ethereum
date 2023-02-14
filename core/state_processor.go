@@ -92,6 +92,60 @@ func (p *StateProcessor) Process(block *types.Block, statedb *state.StateDB, cfg
 	return receipts, allLogs, *usedGas, nil
 }
 
+// TODO
+// 1. The block transactions are separated into two parts: regular transactions and Parallel transactions
+// 2. The PProcess first executes the regular transactions in sequential model.
+// 3. The PProcess then executes the parallel transactions in concurrent model.
+// 4. The PProcess then mediates the issues during the concurrent epoch.
+// 5. The PProcess finalizes the execution results to the stateDB.
+
+// PProcess processes the state changes according to the Ethereum rules in a parallel way
+func (p *StateProcessor) PProcess(block *types.Block, statedb *state.StateDB, cfg vm.Config) (types.Receipts, []*types.Log, uint64, error) {
+	var (
+		receipts    types.Receipts
+		usedGas     = new(uint64)
+		header      = block.Header()
+		blockHash   = block.Hash()
+		blockNumber = block.Number()
+		allLogs     []*types.Log
+		gp          = new(GasPool).AddGas(block.GasLimit())
+	)
+	// Mutate the block and state according to any hard-fork specs
+	if p.config.DAOForkSupport && p.config.DAOForkBlock != nil && p.config.DAOForkBlock.Cmp(block.Number()) == 0 {
+		misc.ApplyDAOHardFork(statedb)
+	}
+	blockContext := NewEVMBlockContext(header, p.bc, nil)
+	vmenv := vm.NewEVM(blockContext, vm.TxContext{}, statedb, p.config, cfg)
+	// Iterate over and process the individual transactions
+	for i, tx := range block.Transactions() {
+		msg, err := tx.AsMessage(types.MakeSigner(p.config, header.Number), header.BaseFee)
+		if err != nil {
+			return nil, nil, 0, fmt.Errorf("could not apply tx %d [%v]: %w", i, tx.Hash().Hex(), err)
+		}
+		statedb.SetTxContext(tx.Hash(), i)
+		receipt, err := applyTransaction(msg, p.config, gp, statedb, blockNumber, blockHash, tx, usedGas, vmenv)
+		if err != nil {
+			return nil, nil, 0, fmt.Errorf("could not apply tx %d [%v]: %w", i, tx.Hash().Hex(), err)
+		}
+		receipts = append(receipts, receipt)
+		allLogs = append(allLogs, receipt.Logs...)
+	}
+	// Finalize the block, applying any consensus engine specific extras (e.g. block rewards)
+	p.engine.Finalize(p.bc, header, statedb, block.Transactions(), block.Uncles())
+
+	return receipts, allLogs, *usedGas, nil
+}
+
+// TODO
+func ApplyPTransactions() {
+	applyPTransaction()
+}
+
+// TODO
+func applyPTransaction() {
+
+}
+
 func applyTransaction(msg types.Message, config *params.ChainConfig, gp *GasPool, statedb *state.StateDB, blockNumber *big.Int, blockHash common.Hash, tx *types.Transaction, usedGas *uint64, evm *vm.EVM) (*types.Receipt, error) {
 	// Create a new context to be used in the EVM environment.
 	txContext := NewEVMTxContext(msg)

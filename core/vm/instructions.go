@@ -531,14 +531,14 @@ func opSstore(pc *uint64, interpreter *EVMInterpreter, scope *ScopeContext) ([]b
 	return nil, nil
 }
 
-// TODO ABCDE: KEY LOGIC
+// TODO: KEY LOGIC
 func opRSstore(pc *uint64, interpreter *EVMInterpreter, scope *ScopeContext) ([]byte, error) {
 	if interpreter.readOnly {
 		return nil, ErrWriteProtection
 	}
 	loc := scope.Stack.pop()
 	val := scope.Stack.pop()
-	// TODO ABCDE:
+	// TODO:
 	interpreter.evm.StateDB.SetResidualState(scope.Contract.Address(), loc.Bytes32(), val.Bytes32())
 	return nil, nil
 }
