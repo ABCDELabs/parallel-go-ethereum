@@ -786,6 +786,7 @@ type Rules struct {
 	IsBerlin, IsLondon                                      bool
 	IsMerge, IsShanghai, isCancun                           bool
 	// TODO
+	IsParallel bool
 }
 
 // Rules ensures c's ChainID is not nil.
@@ -808,6 +809,7 @@ func (c *ChainConfig) Rules(num *big.Int, isMerge bool) Rules {
 		IsBerlin:         c.IsBerlin(num),
 		IsLondon:         c.IsLondon(num),
 		IsMerge:          isMerge,
+		IsParallel:       true, // Hardcore here and will change to configurable later
 		IsShanghai:       c.IsShanghai(num),
 		isCancun:         c.IsCancun(num),
 	}

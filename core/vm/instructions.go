@@ -543,6 +543,15 @@ func opRSstore(pc *uint64, interpreter *EVMInterpreter, scope *ScopeContext) ([]
 	return nil, nil
 }
 
+// TODO: KEY LOGIC
+func opRSload(pc *uint64, interpreter *EVMInterpreter, scope *ScopeContext) ([]byte, error) {
+	loc := scope.Stack.peek()
+	hash := common.Hash(loc.Bytes32())
+	val := interpreter.evm.StateDB.GetState(scope.Contract.Address(), hash)
+	loc.SetBytes(val.Bytes())
+	return nil, nil
+}
+
 func opJump(pc *uint64, interpreter *EVMInterpreter, scope *ScopeContext) ([]byte, error) {
 	if atomic.LoadInt32(&interpreter.evm.abort) != 0 {
 		return nil, errStopToken

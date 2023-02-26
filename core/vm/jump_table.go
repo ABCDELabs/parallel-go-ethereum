@@ -56,7 +56,7 @@ var (
 	londonInstructionSet           = newLondonInstructionSet()
 	mergeInstructionSet            = newMergeInstructionSet()
 	// TODO ABCDE: ADD OUR SET
-	abcdeInstructionSet = newABCDEInstructionSet()
+	parallelInstructionSet = newParallelInstructionSet()
 )
 
 // JumpTable contains the EVM opcodes supported at a given fork.
@@ -81,12 +81,19 @@ func validate(jt JumpTable) JumpTable {
 }
 
 // TODO ABCDE: ADD OUR SET
-func newABCDEInstructionSet() JumpTable {
-
+func newParallelInstructionSet() JumpTable {
 	instructionSet := newMergeInstructionSet()
-	instructionSet[ABCDESTORE] = &operation{
+
+	instructionSet[RSLOAD] = &operation{
+		execute:     opRSload,
+		constantGas: params.SloadGasEIP150,
+		minStack:    minStack(0, 1),
+		maxStack:    maxStack(0, 1),
+	}
+
+	instructionSet[RSSTORE] = &operation{
 		execute:     opRSstore,
-		constantGas: GasABCDEStore,
+		constantGas: GasRSStore,
 		minStack:    minStack(0, 1),
 		maxStack:    maxStack(0, 1),
 	}
