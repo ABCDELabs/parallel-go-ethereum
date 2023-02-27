@@ -100,7 +100,7 @@ func (p *StateProcessor) Process(block *types.Block, statedb *state.StateDB, cfg
 // 5. The PProcess finalizes the execution results to the stateDB.
 
 // PProcess processes the state changes according to the Ethereum rules in a parallel way
-func (p *StateProcessor) PProcess(block *types.Block, statedb *state.StateDB, cfg vm.Config) (types.Receipts, []*types.Log, uint64, error) {
+func (p *StateProcessor) PProcess(block *types.PBlock, statedb *state.StateDB, cfg vm.Config) (types.Receipts, []*types.Log, uint64, error) {
 	var (
 		receipts    types.Receipts
 		usedGas     = new(uint64)
@@ -130,20 +130,44 @@ func (p *StateProcessor) PProcess(block *types.Block, statedb *state.StateDB, cf
 		receipts = append(receipts, receipt)
 		allLogs = append(allLogs, receipt.Logs...)
 	}
+
+	// Parallel execute the parallel batch
+	receipt, txs, err := ApplyParallelBatch(block.PTransactions())
+	if err != nil {
+		fmt.Println("Parallel execution error: ", err)
+	}
+
+	// Handle the rest transactions
+	if txs != nil {
+		for i, tx := range txs {
+			msg, err := tx.AsMessage(types.MakeSigner(p.config, header.Number), header.BaseFee)
+			if err != nil {
+				return nil, nil, 0, fmt.Errorf("could not apply tx %d [%v]: %w", i, tx.Hash().Hex(), err)
+			}
+			statedb.SetTxContext(tx.Hash(), i)
+			receipt, err := applyTransaction(msg, p.config, gp, statedb, blockNumber, blockHash, tx, usedGas, vmenv)
+			if err != nil {
+				return nil, nil, 0, fmt.Errorf("could not apply tx %d [%v]: %w", i, tx.Hash().Hex(), err)
+			}
+			receipts = append(receipts, receipt)
+			allLogs = append(allLogs, receipt.Logs...)
+		}
+	}
+	receipts = append(receipts, receipt)
 	// Finalize the block, applying any consensus engine specific extras (e.g. block rewards)
 	p.engine.Finalize(p.bc, header, statedb, block.Transactions(), block.Uncles())
 
 	return receipts, allLogs, *usedGas, nil
 }
 
-// TODO
-func ApplyPTransactions() {
-	applyPTransaction()
+// ApplyParallelBatch processes a batch of concurrent transactions.
+func ApplyParallelBatch(txs types.Transactions) (*types.Receipt, types.Transactions, error) {
+	return applyParallelBatch(txs)
 }
 
-// TODO
-func applyPTransaction() {
-
+// applyParallelBatch processes a batch of concurrent transactions.
+func applyParallelBatch(txs types.Transactions) (*types.Receipt, types.Transactions, error) {
+	return nil, nil, nil
 }
 
 func applyTransaction(msg types.Message, config *params.ChainConfig, gp *GasPool, statedb *state.StateDB, blockNumber *big.Int, blockHash common.Hash, tx *types.Transaction, usedGas *uint64, evm *vm.EVM) (*types.Receipt, error) {
