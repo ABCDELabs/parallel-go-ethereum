@@ -538,8 +538,9 @@ func opRSstore(pc *uint64, interpreter *EVMInterpreter, scope *ScopeContext) ([]
 	}
 	loc := scope.Stack.pop()
 	val := scope.Stack.pop()
+	op := scope.Stack.pop()
 	// TODO:
-	interpreter.evm.StateDB.SetResidualState(scope.Contract.Address(), loc.Bytes32(), val.Bytes32())
+	interpreter.evm.StateDB.SetResidualState(scope.Contract.Address(), loc.Bytes32(), val.Bytes32(), op.Bytes32())
 	return nil, nil
 }
 

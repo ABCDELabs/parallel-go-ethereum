@@ -18,9 +18,10 @@ package state
 
 import (
 	"bytes"
-	"testing"
-
+	"fmt"
 	"github.com/ABCDEcapital/parallel-go-ethereum/common"
+	"math/big"
+	"testing"
 )
 
 func BenchmarkCutOriginal(b *testing.B) {
@@ -42,5 +43,26 @@ func BenchmarkCutCustomTrim(b *testing.B) {
 	value := common.HexToHash("0x01")
 	for i := 0; i < b.N; i++ {
 		common.TrimLeftZeroes(value[:])
+	}
+}
+
+func TestMergeResidualState(t *testing.T) {
+	s := common.HexToHash("a")
+	result := big.NewInt(0)
+
+	vm := common.BytesToHash([]byte("0xfffffffffffffffffffffffffffffffd"))
+	testValues := []common.Hash{common.HexToHash("a"), vm}
+	for _, v := range testValues {
+		fmt.Println("The value of v:", v)
+	}
+
+	fmt.Println("The value of Hash:", s.Big())
+	fmt.Println("The value of Merge:", result)
+
+	d := big.NewInt(-3)
+	if d.Cmp(big.NewInt(0)) >= 0 {
+		fmt.Println("The result is great than 0", common.BigToHash(big.NewInt(-3)).Big())
+	} else {
+		fmt.Println("The result is less than 0", common.BigToHash(big.NewInt(-3)))
 	}
 }

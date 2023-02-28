@@ -440,10 +440,10 @@ func (s *StateDB) SetCode(addr common.Address, code []byte) {
 
 // SetResidualState
 // TODO
-func (s *StateDB) SetResidualState(addr common.Address, key, value common.Hash) {
+func (s *StateDB) SetResidualState(addr common.Address, key, value, op common.Hash) {
 	stateObject := s.GetOrNewStateObject(addr)
 	if stateObject != nil {
-		stateObject.SetResidualState(s.db, key, value)
+		stateObject.SetResidualState(s.db, key, value, op)
 	}
 }
 

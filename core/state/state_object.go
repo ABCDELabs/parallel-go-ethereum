@@ -42,7 +42,16 @@ func (c Code) String() string {
 
 type Storage map[common.Hash]common.Hash
 
-type ResidualStorage map[common.Hash][]common.Hash
+type ResidualObject struct {
+	Val common.Hash
+	Op  bool
+}
+
+func (r *ResidualObject) GetOperation() bool {
+	return r.Op
+}
+
+type ResidualStorage map[common.Hash][]ResidualObject
 
 func (s Storage) String() (str string) {
 	for key, value := range s {
@@ -296,14 +305,19 @@ func (s *stateObject) SetStorage(storage map[common.Hash]common.Hash) {
 }
 
 // TODO @ABCDE:
-func (s *stateObject) SetResidualState(db Database, key, value common.Hash) {
-	s.setResidualState(key, value)
+func (s *stateObject) SetResidualState(db Database, key, value, op common.Hash) {
+	if op.Big().Cmp(big.NewInt(0)) == 0 {
+		s.setResidualState(key, ResidualObject{value, false})
+	} else {
+		s.setResidualState(key, ResidualObject{value, true})
+
+	}
 }
 
 // TODO @ABCDE:
-func (s *stateObject) setResidualState(key, value common.Hash) {
+func (s *stateObject) setResidualState(key common.Hash, reObj ResidualObject) {
 	s.lock.Lock()
-	s.residualStorage[key] = append(s.residualStorage[key], value)
+	s.residualStorage[key] = append(s.residualStorage[key], reObj)
 	s.lock.Unlock()
 }
 
@@ -312,13 +326,23 @@ func (s *stateObject) setState(key, value common.Hash) {
 }
 
 func (s *stateObject) MergeResidualState() {
-	for key, value := range s.residualStorage {
-		s.dirtyStorage[key] = s.mergeResidualState(value)
+	for key, obj := range s.residualStorage {
+		s.dirtyStorage[key] = s.mergeResidualState(obj)
 	}
 }
 
-func (s *stateObject) mergeResidualState(vals []common.Hash) common.Hash {
-	return vals[0]
+// TODO @ABCDE
+// Would be more works in this function
+func (s *stateObject) mergeResidualState(objs []ResidualObject) common.Hash {
+	var result *big.Int
+	for _, obj := range objs {
+		if obj.Op {
+			result = result.Add(result, obj.Val.Big())
+		} else {
+			result = result.Sub(result, obj.Val.Big())
+		}
+	}
+	return common.BigToHash(result)
 }
 
 // finalise moves all dirty storage slots into the pending area to be hashed or
