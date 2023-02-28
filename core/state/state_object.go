@@ -21,6 +21,7 @@ import (
 	"fmt"
 	"io"
 	"math/big"
+	"sync"
 	"time"
 
 	"github.com/ABCDEcapital/parallel-go-ethereum/common"
@@ -40,6 +41,8 @@ func (c Code) String() string {
 }
 
 type Storage map[common.Hash]common.Hash
+
+type ResidualStorage map[common.Hash][]common.Hash
 
 func (s Storage) String() (str string) {
 	for key, value := range s {
@@ -86,8 +89,8 @@ type stateObject struct {
 	dirtyStorage   Storage // Storage entries that have been modified in the current transaction execution
 	fakeStorage    Storage // Fake storage which constructed by caller for debugging purpose.
 
-	// TODO ABCDE:
-	residualStorage Storage
+	// TODO @ABCDE
+	residualStorage ResidualStorage
 
 	// Cache flags.
 	// When an object is marked suicided it will be delete from the trie
@@ -95,6 +98,7 @@ type stateObject struct {
 	dirtyCode bool // true if the code was updated
 	suicided  bool
 	deleted   bool
+	lock      sync.RWMutex
 }
 
 // empty returns whether the account is considered empty.
@@ -291,23 +295,38 @@ func (s *stateObject) SetStorage(storage map[common.Hash]common.Hash) {
 	// debugging and the `fake` storage won't be committed to database.
 }
 
-// TODO ABCDE:
+// TODO @ABCDE:
 func (s *stateObject) SetResidualState(db Database, key, value common.Hash) {
 	s.setResidualState(key, value)
 }
 
-// TODO ABCDE:
+// TODO @ABCDE:
 func (s *stateObject) setResidualState(key, value common.Hash) {
-	s.residualStorage[key] = value
+	s.lock.Lock()
+	s.residualStorage[key] = append(s.residualStorage[key], value)
+	s.lock.Unlock()
 }
 
 func (s *stateObject) setState(key, value common.Hash) {
 	s.dirtyStorage[key] = value
 }
 
+func (s *stateObject) MergeResidualState() {
+	for key, value := range s.residualStorage {
+		s.dirtyStorage[key] = s.mergeResidualState(value)
+	}
+}
+
+func (s *stateObject) mergeResidualState(vals []common.Hash) common.Hash {
+	return vals[0]
+}
+
 // finalise moves all dirty storage slots into the pending area to be hashed or
 // committed later. It is invoked at the end of every transaction.
 func (s *stateObject) finalise(prefetch bool) {
+	// TODO @ABCDE
+	// Merge Residual State to dirty buffers
+	s.MergeResidualState()
 	slotsToPrefetch := make([][]byte, 0, len(s.dirtyStorage))
 	for key, value := range s.dirtyStorage {
 		s.pendingStorage[key] = value
