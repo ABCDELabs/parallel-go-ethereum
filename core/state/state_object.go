@@ -127,13 +127,14 @@ func newObject(db *StateDB, address common.Address, data types.StateAccount) *st
 		data.Root = emptyRoot
 	}
 	return &stateObject{
-		db:             db,
-		address:        address,
-		addrHash:       crypto.Keccak256Hash(address[:]),
-		data:           data,
-		originStorage:  make(Storage),
-		pendingStorage: make(Storage),
-		dirtyStorage:   make(Storage),
+		db:              db,
+		address:         address,
+		addrHash:        crypto.Keccak256Hash(address[:]),
+		data:            data,
+		originStorage:   make(Storage),
+		pendingStorage:  make(Storage),
+		dirtyStorage:    make(Storage),
+		residualStorage: make(map[common.Hash][]ResidualObject),
 	}
 }
 
@@ -310,7 +311,6 @@ func (s *stateObject) SetResidualState(db Database, key, value, op common.Hash) 
 		s.setResidualState(key, ResidualObject{value, false})
 	} else {
 		s.setResidualState(key, ResidualObject{value, true})
-
 	}
 }
 
