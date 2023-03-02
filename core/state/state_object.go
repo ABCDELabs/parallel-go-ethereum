@@ -110,6 +110,19 @@ type stateObject struct {
 	lock      sync.RWMutex
 }
 
+type TStateObject struct {
+	residualStorage ResidualStorage
+	dirtyStorage    Storage
+	lock            sync.RWMutex
+}
+
+func NewTStateObject() *TStateObject {
+	return &TStateObject{
+		residualStorage: make(ResidualStorage),
+		dirtyStorage:    make(Storage),
+	}
+}
+
 // empty returns whether the account is considered empty.
 func (s *stateObject) empty() bool {
 	return s.data.Nonce == 0 && s.data.Balance.Sign() == 0 && bytes.Equal(s.data.CodeHash, emptyCodeHash)
@@ -305,6 +318,10 @@ func (s *stateObject) SetStorage(storage map[common.Hash]common.Hash) {
 	// debugging and the `fake` storage won't be committed to database.
 }
 
+func (s *stateObject) setState(key, value common.Hash) {
+	s.dirtyStorage[key] = value
+}
+
 // TODO @ABCDE:
 func (s *stateObject) SetResidualState(db Database, key, value, op common.Hash) {
 	if op.Big().Cmp(big.NewInt(0)) == 0 {
@@ -321,20 +338,54 @@ func (s *stateObject) setResidualState(key common.Hash, reObj ResidualObject) {
 	s.lock.Unlock()
 }
 
-func (s *stateObject) setState(key, value common.Hash) {
-	s.dirtyStorage[key] = value
-}
-
+// TODO @ABCDE:
 func (s *stateObject) MergeResidualState() {
 	for key, obj := range s.residualStorage {
-		s.dirtyStorage[key] = s.mergeResidualState(obj)
+		s.dirtyStorage[key] = common.BigToHash(s.dirtyStorage[key].Big().Add(s.dirtyStorage[key].Big(), s.mergeResidualState(obj).Big()))
 	}
 }
 
 // TODO @ABCDE
 // Would be more works in this function
 func (s *stateObject) mergeResidualState(objs []ResidualObject) common.Hash {
-	var result *big.Int
+	result := big.NewInt(0)
+	for _, obj := range objs {
+		if obj.Op {
+			result = result.Add(result, obj.Val.Big())
+		} else {
+			result = result.Sub(result, obj.Val.Big())
+		}
+	}
+	return common.BigToHash(result)
+}
+
+// TODO @ABCDE
+func (s *TStateObject) SetResidualState(key, value, op common.Hash) {
+	if op.Big().Cmp(big.NewInt(0)) == 0 {
+		s.setResidualState(key, ResidualObject{value, false})
+	} else {
+		s.setResidualState(key, ResidualObject{value, true})
+	}
+}
+
+// TODO @ABCDE
+func (s *TStateObject) setResidualState(key common.Hash, reObj ResidualObject) {
+	s.lock.Lock()
+	s.residualStorage[key] = append(s.residualStorage[key], reObj)
+	s.lock.Unlock()
+}
+
+// TODO @ABCDE
+func (s *TStateObject) MergeResidualState() {
+	for key, obj := range s.residualStorage {
+		s.dirtyStorage[key] = common.BigToHash(s.dirtyStorage[key].Big().Add(s.dirtyStorage[key].Big(), s.mergeResidualState(obj).Big()))
+	}
+}
+
+// TODO @ABCDE
+// Would be more works in this function
+func (s *TStateObject) mergeResidualState(objs []ResidualObject) common.Hash {
+	result := big.NewInt(0)
 	for _, obj := range objs {
 		if obj.Op {
 			result = result.Add(result, obj.Val.Big())
@@ -351,6 +402,7 @@ func (s *stateObject) finalise(prefetch bool) {
 	// TODO @ABCDE
 	// Merge Residual State to dirty buffers
 	s.MergeResidualState()
+	// Original Process
 	slotsToPrefetch := make([][]byte, 0, len(s.dirtyStorage))
 	for key, value := range s.dirtyStorage {
 		s.pendingStorage[key] = value

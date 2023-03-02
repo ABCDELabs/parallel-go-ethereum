@@ -22,6 +22,7 @@ import (
 	"github.com/ABCDEcapital/parallel-go-ethereum/common"
 	"math/big"
 	"testing"
+	"time"
 )
 
 func BenchmarkCutOriginal(b *testing.B) {
@@ -129,5 +130,32 @@ func TestMergeResidualObject(t *testing.T) {
 	} else {
 		fmt.Printf("Merge Residual Object Test pass, expect %d, got %d\n", expect, result)
 	}
+
+}
+
+func TestMockParallel(t *testing.T) {
+
+	pos := common.HexToHash("1")
+	val := common.HexToHash("2")
+	//oppSub := common.HexToHash("0")
+	oppADD := common.HexToHash("1")
+
+	tsobj := NewTStateObject()
+
+	tsobj.dirtyStorage[pos] = val
+
+	for i := 0; i < 10; i++ {
+		if i%2 == 0 {
+			go tsobj.SetResidualState(pos, val, oppADD)
+		} else {
+			go tsobj.SetResidualState(pos, val, oppADD)
+		}
+	}
+
+	time.Sleep(time.Second * 2)
+
+	tsobj.MergeResidualState()
+
+	fmt.Println(tsobj.dirtyStorage[pos].Big())
 
 }
