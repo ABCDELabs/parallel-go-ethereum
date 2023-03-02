@@ -71,14 +71,15 @@ func TestMergeResidualState(t *testing.T) {
 func TestMergeResidualObject(t *testing.T) {
 
 	pos1 := common.HexToHash("1")
+	pos2 := common.HexToHash("2")
 
 	op1 := ResidualObject{Val: common.HexToHash("a"), Op: true}
 	op2 := ResidualObject{Val: common.HexToHash("1"), Op: true}
-	op3 := ResidualObject{Val: common.HexToHash("2"), Op: false}
+	op3 := ResidualObject{Val: common.HexToHash("1"), Op: false}
+	op4 := ResidualObject{Val: common.HexToHash("2"), Op: true}
+	op5 := ResidualObject{Val: common.HexToHash("2"), Op: false}
 
 	res := []ResidualObject{op1, op2}
-
-	fmt.Println(op1.Val.Big(), op2.Val.Big())
 
 	result := big.NewInt(0)
 	for _, obj := range res {
@@ -88,7 +89,13 @@ func TestMergeResidualObject(t *testing.T) {
 			result = result.Sub(result, obj.Val.Big())
 		}
 	}
-	fmt.Println("The Merge Result", result)
+
+	expect := big.NewInt(11)
+	if expect.Cmp(result) != 0 {
+		t.Errorf("Merge Residual Object Test falied, expect %d, got %d", expect, result)
+	} else {
+		fmt.Printf("Merge Residual Object Test pass, expect %d, got %d\n", expect, result)
+	}
 
 	state := make(ResidualStorage)
 	state[pos1] = []ResidualObject{op1, op3}
@@ -100,6 +107,27 @@ func TestMergeResidualObject(t *testing.T) {
 			result = result.Sub(result, obj.Val.Big())
 		}
 	}
-	fmt.Println("The Merge Result", result)
+	expect = big.NewInt(9)
+	if expect.Cmp(result) != 0 {
+		t.Errorf("Merge Residual Object Test falied, expect %d, got %d", expect, result)
+	} else {
+		fmt.Printf("Merge Residual Object Test pass, expect %d, got %d\n", expect, result)
+	}
+
+	state[pos2] = []ResidualObject{op1, op4, op5}
+	result = big.NewInt(0)
+	for _, obj := range state[pos2] {
+		if obj.Op {
+			result = result.Add(result, obj.Val.Big())
+		} else {
+			result = result.Sub(result, obj.Val.Big())
+		}
+	}
+	expect = big.NewInt(10)
+	if expect.Cmp(result) != 0 {
+		t.Errorf("Merge Residual Object Test falied, expect %d, got %d", expect, result)
+	} else {
+		fmt.Printf("Merge Residual Object Test pass, expect %d, got %d\n", expect, result)
+	}
 
 }
