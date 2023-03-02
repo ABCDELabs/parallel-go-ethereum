@@ -21,6 +21,7 @@ import (
 	"fmt"
 	"github.com/ABCDEcapital/parallel-go-ethereum/common"
 	"math/big"
+	"sync"
 	"testing"
 	"time"
 )
@@ -157,5 +158,46 @@ func TestMockParallel(t *testing.T) {
 	tsobj.MergeResidualState()
 
 	fmt.Println(tsobj.dirtyStorage[pos].Big())
+
+}
+
+func TestMockConcurrentTransaction(t *testing.T) {
+	var wg sync.WaitGroup
+
+	tsobj := NewTStateObject()
+
+	pos := common.HexToHash("1")
+	val := common.HexToHash("2")
+	oppADD := common.HexToHash("1")
+
+	start := time.Now()
+
+	for i := 0; i < 1000; i++ {
+		val = common.BigToHash(val.Big().Add(val.Big(), big.NewInt(1)))
+		time.Sleep(time.Millisecond * 8)
+		tsobj.SetState(pos, val)
+	}
+	elapsed := time.Since(start)
+	fmt.Println("The sequential execution result:", tsobj.dirtyStorage[pos].Big())
+	fmt.Println("The sequential execution time:", elapsed)
+
+	tsobj.dirtyStorage = make(Storage)
+
+	tsobj.dirtyStorage[pos] = common.HexToHash("2")
+	val = common.HexToHash("1")
+	start = time.Now()
+	for i := 0; i < 1000; i++ {
+		wg.Add(1)
+		go func() {
+			tsobj.SetResidualState(pos, val, oppADD)
+			time.Sleep(time.Millisecond * 8)
+			wg.Done()
+		}()
+	}
+	wg.Wait()
+	elapsed = time.Since(start)
+	tsobj.MergeResidualState()
+	fmt.Println("The Parallel execution result:", tsobj.dirtyStorage[pos].Big())
+	fmt.Println("The Parallel execution time:", elapsed)
 
 }

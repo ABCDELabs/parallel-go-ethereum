@@ -396,6 +396,10 @@ func (s *TStateObject) mergeResidualState(objs []ResidualObject) common.Hash {
 	return common.BigToHash(result)
 }
 
+func (s *TStateObject) SetState(key, value common.Hash) {
+	s.dirtyStorage[key] = value
+}
+
 // finalise moves all dirty storage slots into the pending area to be hashed or
 // committed later. It is invoked at the end of every transaction.
 func (s *stateObject) finalise(prefetch bool) {
