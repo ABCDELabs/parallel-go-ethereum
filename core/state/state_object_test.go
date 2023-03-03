@@ -186,7 +186,13 @@ func TestMockConcurrentTransaction(t *testing.T) {
 	tsobj.dirtyStorage[pos] = common.HexToHash("2")
 	val = common.HexToHash("1")
 	start = time.Now()
-	for i := 0; i < 1000; i++ {
+	for i := 0; i < 451; i++ {
+		val = common.BigToHash(val.Big().Add(val.Big(), big.NewInt(1)))
+		time.Sleep(time.Millisecond * 8)
+		tsobj.SetState(pos, val)
+	}
+	val = common.HexToHash("1")
+	for i := 0; i < 550; i++ {
 		wg.Add(1)
 		go func() {
 			tsobj.SetResidualState(pos, val, oppADD)
