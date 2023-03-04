@@ -185,15 +185,20 @@ func TestMockConcurrentTransaction(t *testing.T) {
 
 	tsobj.dirtyStorage[pos] = common.HexToHash("2")
 	val = common.HexToHash("1")
+
+	// Parallel Mode
 	start = time.Now()
-	for i := 0; i < 451; i++ {
+	// Seq num
+	for i := 0; i < 901; i++ {
 		val = common.BigToHash(val.Big().Add(val.Big(), big.NewInt(1)))
 		time.Sleep(time.Millisecond * 8)
 		tsobj.SetState(pos, val)
 	}
 	val = common.HexToHash("1")
-	for i := 0; i < 550; i++ {
+	// Parallel Number
+	for i := 0; i < 100; i++ {
 		wg.Add(1)
+		// Parallel
 		go func() {
 			tsobj.SetResidualState(pos, val, oppADD)
 			time.Sleep(time.Millisecond * 8)
