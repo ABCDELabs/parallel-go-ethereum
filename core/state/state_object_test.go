@@ -212,3 +212,78 @@ func TestMockConcurrentTransaction(t *testing.T) {
 	fmt.Println("The Parallel execution time:", elapsed)
 
 }
+
+func TestMockConcurrentTokenTransferTransactions(t *testing.T) {
+	var wg sync.WaitGroup
+
+	tsobj := NewTStateObject()
+
+	alicePos := common.HexToHash("1")
+	aliceVal := common.HexToHash("1")
+
+	bobPos := common.HexToHash("10")
+	// 2000
+	bobVal := common.HexToHash("7d0")
+
+	resVal := common.HexToHash("1")
+
+	opADD := common.HexToHash("1")
+	opSub := common.HexToHash("0")
+
+	tsobj.dirtyStorage[alicePos] = aliceVal
+	tsobj.dirtyStorage[bobPos] = bobVal
+	fmt.Printf("The initial balance: Alice Balance: %d, Bob Balance: %d\n", tsobj.dirtyStorage[alicePos].Big(), tsobj.dirtyStorage[bobPos].Big())
+	fmt.Println("Then, Bob transfer 1 token to Alice for 1000 times")
+	start := time.Now()
+	for i := 0; i < 1000; i++ {
+		aliceVal = common.BigToHash(aliceVal.Big().Add(aliceVal.Big(), big.NewInt(1)))
+		bobVal = common.BigToHash(bobVal.Big().Sub(bobVal.Big(), big.NewInt(1)))
+		time.Sleep(time.Millisecond * 7)
+		tsobj.SetState(alicePos, aliceVal)
+		tsobj.SetState(bobPos, bobVal)
+	}
+	elapsed := time.Since(start)
+	fmt.Printf("The sequential execution result: Alice Balance: %d, Bob Balance: %d\n", tsobj.dirtyStorage[alicePos].Big(), tsobj.dirtyStorage[bobPos].Big())
+	fmt.Println("The sequential execution time:", elapsed)
+
+	tsobj.dirtyStorage = make(Storage)
+
+	aliceVal = common.HexToHash("1")
+	bobVal = common.HexToHash("7d0")
+
+	tsobj.dirtyStorage[alicePos] = aliceVal
+	tsobj.dirtyStorage[bobPos] = bobVal
+
+	fmt.Printf("----------------------------------------------------------------------------------------------------------------\n")
+	seq := 800
+	para := 200
+	fmt.Printf("Suppose there are %d transactions executed by sequential paradigm and %d transactions executed by parallel paradigm\n", seq, para)
+
+	// Parallel Mode
+	start = time.Now()
+	for i := 0; i < seq; i++ {
+		aliceVal = common.BigToHash(aliceVal.Big().Add(aliceVal.Big(), resVal.Big()))
+		bobVal = common.BigToHash(bobPos.Big().Sub(bobVal.Big(), resVal.Big()))
+		time.Sleep(time.Millisecond * 7)
+		tsobj.SetState(alicePos, aliceVal)
+		tsobj.SetState(bobPos, bobVal)
+	}
+	// Parallel Number
+	//fmt.Printf("The Semi execution result: Alice Balance: %d, Bob Balance: %d\n", tsobj.dirtyStorage[alicePos].Big(), tsobj.dirtyStorage[bobPos].Big())
+	for i := 0; i < para; i++ {
+		wg.Add(1)
+		// Parallel
+		go func() {
+			tsobj.SetResidualState(alicePos, resVal, opADD)
+			tsobj.SetResidualState(bobPos, resVal, opSub)
+			time.Sleep(time.Millisecond * 7)
+			wg.Done()
+		}()
+	}
+	wg.Wait()
+	elapsed = time.Since(start)
+	tsobj.MergeResidualState()
+	fmt.Printf("The Parallel execution result: Alice Balance: %d, Bob Balance: %d\n", tsobj.dirtyStorage[alicePos].Big(), tsobj.dirtyStorage[bobPos].Big())
+	fmt.Println("The Parallel execution time:", elapsed)
+
+}
