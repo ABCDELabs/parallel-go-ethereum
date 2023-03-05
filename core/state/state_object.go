@@ -378,13 +378,19 @@ func (s *TStateObject) setResidualState(key common.Hash, reObj ResidualObject) {
 // TODO @ABCDE
 func (s *TStateObject) MergeResidualState() {
 	for key, obj := range s.residualStorage {
-		s.dirtyStorage[key] = common.BigToHash(s.dirtyStorage[key].Big().Add(s.dirtyStorage[key].Big(), s.mergeResidualState(obj).Big()))
+		resVal, op := s.mergeResidualState(obj)
+		if op {
+			s.dirtyStorage[key] = common.BigToHash(s.dirtyStorage[key].Big().Add(s.dirtyStorage[key].Big(), resVal.Big()))
+		} else {
+			s.dirtyStorage[key] = common.BigToHash(s.dirtyStorage[key].Big().Sub(s.dirtyStorage[key].Big(), resVal.Big()))
+		}
+
 	}
 }
 
 // TODO @ABCDE
 // Would be more works in this function
-func (s *TStateObject) mergeResidualState(objs []ResidualObject) common.Hash {
+func (s *TStateObject) mergeResidualState(objs []ResidualObject) (common.Hash, bool) {
 	result := big.NewInt(0)
 	for _, obj := range objs {
 		if obj.Op {
@@ -393,7 +399,11 @@ func (s *TStateObject) mergeResidualState(objs []ResidualObject) common.Hash {
 			result = result.Sub(result, obj.Val.Big())
 		}
 	}
-	return common.BigToHash(result)
+	if result.Cmp(big.NewInt(0)) >= 0 {
+		return common.BigToHash(result), true
+	} else {
+		return common.BigToHash(result), false
+	}
 }
 
 func (s *TStateObject) SetState(key, value common.Hash) {
