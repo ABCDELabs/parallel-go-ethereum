@@ -1,6 +1,51 @@
-## Go Ethereum
+## Parallel Go Ethereum
 
-Official Golang execution layer implementation of the Ethereum protocol.
+Our parallel Go-Ethereum implementation is based on the official Golang execution layer implementation of the Ethereum protocol.
+
+### Benchmarks
+
+Runtime environment:
+Device: Macbook Pro 15-inch, 2017
+OS:  MacOS Ventura 13.2 (b)
+CPU: Intel(R) Core(TM) i7-7820HQ CPU @ 2.90GHz
+
+#### Simulate 500 token transfer transactions
+
+| Test Details | Parallel execution (Avaerage)| Sequenctial execution (Avaerage) | Ratio |
+| :----:| ----: | :----:  |:----: |
+| **500** txns in Seq & **0** txns in parallel  | NaN    | 3.761s | NaN |
+| **450** txns in Seq & **50** txns in parallel | 3.375s | 3.761s | 111.43% |
+| **400** txns in Seq & **100** txns in parallel| 2.998s | 3.761s | 125.45% |
+| **300** txns in Seq & **200** txns in parallel| 2.276s | 3.761s | 165.24% |
+| **200** txns in Seq & **300** txns in parallel| 1.518s | 3.761s | 247.76% |
+| **100** txns in Seq & **400** txns in parallel| 760.16 ms |  3.761s | 494.76% |
+| **0** txns in Seq & **500** txns in parallel  | 9.146 ms  |  3.761s | 41121.80% |
+
+#### Simulate 1000 token transfer transactions
+
+| Test Details | Parallel execution (Avaerage)| Sequenctial execution (Avaerage) | Ratio |
+| :----:| ----: | :----:  |:----: |
+| **1000** txns in Seq & **0** txns in parallel| NaN | 7.493s | NaN |
+| **950** txns in Seq & **50** txns in parallel| 7.128s | 7.493s | 105.1% |
+| **900** txns in Seq & **100** txns in parallel| 6.751s | 7.493s | 110.9% |
+| **800** txns in Seq & **200** txns in parallel| 5.995s | 7.493s | 124.9% |
+| **500** txns in Seq & **500** txns in parallel| 3.762s | 7.493s | 199.2% |
+| **300** txns in Seq & **700** txns in parallel| 2.275s | 7.493s | 329.4% |
+| **100** txns in Seq & **900** txns in parallel| 764.88 ms | 7.493s | 979.6% |
+| **0** txns in Seq & **1000** txns in parallel| 9.798 ms | NaN | 76474.8% |
+
+#### Simulate 2000 token transfer transactions
+
+| Test Details | Parallel execution (Avaerage)| Sequenctial execution (Avaerage) | Ratio |
+| :----:| ----: | :----:  |:----: |
+| **2000** txns in Seq & **0** txns in parallel  | NaN | 15.034s | NaN |
+| **1500** txns in Seq & **50** txns in parallel | 11.299s | 15.034s | 133.05% |
+| **1000** txns in Seq & **100** txns in parallel| 7.441s  | 15.034s | 202.04% |
+| **500** txns in Seq & **200** txns in parallel | 3.720s  | 15.034s | 404.14% |
+| **0** txns in Seq & **500** txns in parallel   | 12.881 ms | NaN  | 116723.02% |
+
+
+## Building the source
 
 [![API Reference](
 https://camo.githubusercontent.com/915b7be44ada53c290eb157634330494ebe3e30a/68747470733a2f2f676f646f632e6f72672f6769746875622e636f6d2f676f6c616e672f6764646f3f7374617475732e737667
@@ -11,8 +56,6 @@ https://camo.githubusercontent.com/915b7be44ada53c290eb157634330494ebe3e30a/6874
 
 Automated builds are available for stable releases and the unstable master branch. Binary
 archives are published at https://geth.ethereum.org/downloads/.
-
-## Building the source
 
 For prerequisites and detailed build instructions please read the [Installation Instructions](https://geth.ethereum.org/docs/install-and-build/installing-geth).
 
