@@ -5,14 +5,15 @@ Our parallel Go-Ethereum implementation is based on the official Golang executio
 ### Benchmarks
 
 Runtime environment:
-Device: Macbook Pro 15-inch, 2017
-OS:  MacOS Ventura 13.2 (b)
-CPU: Intel(R) Core(TM) i7-7820HQ CPU @ 2.90GHz
+
+- Device: Macbook Pro 15-inch, 2017
+- OS:  MacOS Ventura 13.2 (b)
+- CPU: Intel(R) Core(TM) i7-7820HQ CPU @ 2.90GHz
 
 #### Simulate 500 token transfer transactions
 
-| Test Details | Parallel execution (Avaerage)| Sequenctial execution (Avaerage) | Ratio |
-| :----:| ----: | :----:  |:----: |
+| Test Details | Parallel execution (Avaerage)| Sequential execution (Avaerage) | Ratio |
+| :----:| :----: | :----:  | :----: |
 | **500** txns in Seq & **0** txns in parallel  | NaN    | 3.761s | NaN |
 | **450** txns in Seq & **50** txns in parallel | 3.375s | 3.761s | 111.43% |
 | **400** txns in Seq & **100** txns in parallel| 2.998s | 3.761s | 125.45% |
@@ -23,8 +24,8 @@ CPU: Intel(R) Core(TM) i7-7820HQ CPU @ 2.90GHz
 
 #### Simulate 1000 token transfer transactions
 
-| Test Details | Parallel execution (Avaerage)| Sequenctial execution (Avaerage) | Ratio |
-| :----:| ----: | :----:  |:----: |
+| Test Details | Parallel execution (Avaerage)| Sequential execution (Avaerage) | Ratio |
+| :----:| :----: | :----:  | :----: |
 | **1000** txns in Seq & **0** txns in parallel| NaN | 7.493s | NaN |
 | **950** txns in Seq & **50** txns in parallel| 7.128s | 7.493s | 105.1% |
 | **900** txns in Seq & **100** txns in parallel| 6.751s | 7.493s | 110.9% |
@@ -36,8 +37,8 @@ CPU: Intel(R) Core(TM) i7-7820HQ CPU @ 2.90GHz
 
 #### Simulate 2000 token transfer transactions
 
-| Test Details | Parallel execution (Avaerage)| Sequenctial execution (Avaerage) | Ratio |
-| :----:| ----: | :----:  |:----: |
+| Test Details | Parallel execution (Avaerage)| Sequential execution (Avaerage) | Ratio |
+| :----:| :----: | :----:  | :----: |
 | **2000** txns in Seq & **0** txns in parallel  | NaN | 15.034s | NaN |
 | **1500** txns in Seq & **50** txns in parallel | 11.299s | 15.034s | 133.05% |
 | **1000** txns in Seq & **100** txns in parallel| 7.441s  | 15.034s | 202.04% |
