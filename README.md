@@ -1,6 +1,6 @@
 ## Parallel Go Ethereum
 
-Our parallel Go-Ethereum implementation is based on the official Golang execution layer implementation of the Ethereum protocol.
+We implement a parallel Go-Ethereum based on the official Golang execution layer codebase (go-ethereum).
 
 ### Benchmarks
 
