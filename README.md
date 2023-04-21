@@ -40,10 +40,10 @@ Runtime environment:
 | Test Details | Parallel execution (Average)| Sequential execution (Average) | Ratio |
 | :----:| :----: | :----:  | :----: |
 | **2000** txns in Seq & **0** txns in parallel  | NaN | 15.034s | NaN |
-| **1500** txns in Seq & **50** txns in parallel | 11.299s | 15.034s | 133.05% |
-| **1000** txns in Seq & **100** txns in parallel| 7.441s  | 15.034s | 202.04% |
-| **500** txns in Seq & **200** txns in parallel | 3.720s  | 15.034s | 404.14% |
-| **0** txns in Seq & **500** txns in parallel   | 12.881 ms | NaN  | 116723.02% |
+| **1500** txns in Seq & **500** txns in parallel | 11.299s | 15.034s | 133.05% |
+| **1000** txns in Seq & **1000** txns in parallel| 7.441s  | 15.034s | 202.04% |
+| **500** txns in Seq & **1500** txns in parallel | 3.720s  | 15.034s | 404.14% |
+| **0** txns in Seq & **2000** txns in parallel   | 12.881 ms | NaN  | 116723.02% |
 
 
 ## Building the source
