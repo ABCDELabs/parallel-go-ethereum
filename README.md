@@ -1,4 +1,6 @@
-## Parallel Go Ethereum
+## Parallel Go-Ethereum
+[!NOTE]
+This repo is only used for proof-of-concept, which lacks many workflow details. Please contact us if you want to use it in production.
 
 We implement a parallel Go-Ethereum based on the official Golang execution layer codebase (go-ethereum).
 
@@ -10,9 +12,11 @@ Runtime environment:
 - OS:  MacOS Ventura 13.2 (b)
 - CPU: Intel(R) Core(TM) i7-7820HQ CPU @ 2.90GHz
 
+Instead of immediately updating the state after transaction execution (opSstore), we cache incremental values in a special memory via a new opCode `OpResStore` first and then calculate and finalize the final state after all transactions are executed for the given transaction set.
+
 #### Simulate 500 token transfer transactions
 
-| Test Details | Parallel execution (Average)| Sequential execution (Average) | Ratio |
+| Test Details | Parallel execution (Average time)| Sequential execution (Average time) | Ratio |
 | :----:| :----: | :----:  | :----: |
 | **500** txns in Seq & **0** txns in parallel  | NaN    | 3.761s | NaN |
 | **450** txns in Seq & **50** txns in parallel | 3.375s | 3.761s | 111.43% |
@@ -24,7 +28,7 @@ Runtime environment:
 
 #### Simulate 1000 token transfer transactions
 
-| Test Details | Parallel execution (Average)| Sequential execution (Average) | Ratio |
+| Test Details | Parallel execution (Average time)| Sequential execution (Average time) | Ratio |
 | :----:| :----: | :----:  | :----: |
 | **1000** txns in Seq & **0** txns in parallel| NaN | 7.493s | NaN |
 | **950** txns in Seq & **50** txns in parallel| 7.128s | 7.493s | 105.1% |
@@ -37,7 +41,7 @@ Runtime environment:
 
 #### Simulate 2000 token transfer transactions
 
-| Test Details | Parallel execution (Average)| Sequential execution (Average) | Ratio |
+| Test Details | Parallel execution (Average time)| Sequential execution (Average time) | Ratio |
 | :----:| :----: | :----:  | :----: |
 | **2000** txns in Seq & **0** txns in parallel  | NaN | 15.034s | NaN |
 | **1500** txns in Seq & **500** txns in parallel | 11.299s | 15.034s | 133.05% |
